@@ -1,0 +1,93 @@
+package $pack;
+
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.HttpClient;
+import org.apache.http.cookie.Cookie;
+
+/**
+ * 
+ * @author Chenmin
+ *
+ */
+public class ${sazFilename}Test {
+
+	/**
+	 * @param args
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
+	 * @throws KeyStoreException 
+	 * @throws NoSuchAlgorithmException 
+	 * @throws KeyManagementException 
+	 */
+	public static void main(String[] args) throws ClientProtocolException, IOException, KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+		CookiesHttpClient chc = new CookiesHttpClient();
+		CookieStore cookieStore = chc.getCookieStore();
+		HttpClient httpclient = chc.get();
+		//config proxy in HttpClientTools.java
+		//HttpClientTools.useProxy = true;
+//gen --- > begin
+#foreach($fb in ${fbList})
+		#set( $index = $!{velocityCount})
+		##//[$index] $fb.method -> $fb.url  
+		
+		String url${index} = "$fb.url";
+		Map<String, String> s${index} = new HashMap<String, String>();
+		#foreach($param in ${fb.settings.keySet()})s${index}.put("$param", "${fb.settings.get($param)}");
+		#end
+		
+		#if ($fb.method == "POST")
+			#if (!${fb.param})
+			
+		Map<String, String> p${index} = new HashMap<String, String>();
+		#foreach($param in ${fb.paramMap.keySet()})p${index}.put("$param", "$!{fb.paramMap.get($param)}");
+		#end
+		
+		String r${index} = HttpClientTools.postForm(httpclient, url${index}, p${index}, s${index});	
+		
+			#else
+		
+		String p${index} = "$fb.param";
+		String r${index} = HttpClientTools.post(httpclient, url${index}, p${index}, s${index});	
+			#end
+			
+		#else
+			#if (${fb.paramMap.size()}==0)
+			
+		String r${index} = HttpClientTools.get(httpclient, url${index}, s${index});
+		
+			#else
+			
+		Map<String, String> p${index} = new HashMap<String, String>();
+		#foreach($param in ${fb.paramMap.keySet()})p${index}.put("$param", "$!{fb.paramMap.get($param)}");
+		#end
+		
+		String r${index} = HttpClientTools.get(httpclient, url${index}, p${index}, s${index});		
+			
+			#end
+			
+		#end
+		
+		//Write File for debug
+		//HttpClientTools.write("r${index}.html",r${index});
+		System.out.println(r${index});
+#end
+//gen --- > end
+		printlnCookie(cookieStore);
+		chc.close();
+	}
+	
+	private static void printlnCookie(CookieStore cookieStore) {
+		for(Cookie cookie:cookieStore.getCookies()){
+			System.out.println(cookie);
+		}
+	}
+
+}
