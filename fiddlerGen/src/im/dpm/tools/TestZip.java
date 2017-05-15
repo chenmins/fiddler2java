@@ -29,10 +29,10 @@ public class TestZip {
 	 */
 
 	public static void main(String[] args) throws Exception {
-		String sazFile = "Btkitty_bid.saz";
+		String sazFile = "fanyi.saz";
 		//ctp_sin_bkk
 //		String sazFile = "e:\\ctp_sin_bkk.saz";
-		String genRoot = "D:\\workspace\\swf3\\fiddlerTest\\src";
+		String genRoot = "../fiddlerTest/src";
 		String pack = "org.chenmin.login";
 		String exStart="http://update.pan.baidu.com";
 		String exEnd=".js,.css,.gzip,.gif,.jpg,.png,.jpeg";
