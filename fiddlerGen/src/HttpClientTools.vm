@@ -286,12 +286,12 @@ public class HttpClientTools {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e1) {
-				}
-			}
+//			if (reader != null) {
+//				try {
+//					reader.close();
+//				} catch (IOException e1) {
+//				}
+//			}
 		}
 		return sb.toString();
 	}
