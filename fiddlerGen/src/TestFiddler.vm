@@ -77,6 +77,8 @@ public class ${sazFilename}Test {
 		
 		//Write File for debug
 		//HttpClientTools.write("r${index}.html",r${index});
+		//Only for Download 
+		//HttpClientTools.httpDownloadFile(httpclient, url${index}, "r${index}.html", null, p${index}, s${index});		
 		System.out.println(r${index});
 #end
 //gen --- > end
