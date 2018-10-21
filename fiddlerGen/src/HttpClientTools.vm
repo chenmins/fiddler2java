@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
@@ -90,6 +91,24 @@ public class HttpClientTools {
 		}
 		CloseableHttpResponse response1 = (CloseableHttpResponse) httpclient
 				.execute(httpGet);
+		
+		//----------判断是否重定向开始
+        int code = response1.getStatusLine().getStatusCode();
+        String newuri="";
+        int redirectIndex = 0;
+        while (code == 302 || code == 301) {
+        	redirectIndex++;
+        	if(redirectIndex>5){//大于5次就退出，避免死循环
+        		break;
+        	}
+            Header header = response1.getFirstHeader("location"); // 跳转的目标地址是在 HTTP-HEAD 中的
+            newuri = header.getValue(); // 这就是跳转后的地址，再向这个地址发出新申请，以便得到跳转后的信息是啥。
+            httpGet = new HttpGet(newuri);
+            response1 = (CloseableHttpResponse) httpclient.execute(httpGet);
+            code = response1.getStatusLine().getStatusCode();
+        }
+        //------------重定向结束
+		
 		try {
 			HttpEntity entity1 = response1.getEntity();
 			String body = EntityUtils.toString(entity1);
@@ -140,6 +159,23 @@ public class HttpClientTools {
 		httpPost.setEntity(new UrlEncodedFormEntity(nvps));
 		CloseableHttpResponse response1 = (CloseableHttpResponse) httpclient
 				.execute(httpPost);
+        //----------判断是否重定向开始
+        int code = response1.getStatusLine().getStatusCode();
+        String newuri="";
+        int redirectIndex = 0;
+        while (code == 302 || code == 301) {
+        	redirectIndex++;
+        	if(redirectIndex>5){//大于5次就退出，避免死循环
+        		break;
+        	}
+            Header header = response1.getFirstHeader("location"); // 跳转的目标地址是在 HTTP-HEAD 中的
+            newuri = header.getValue(); // 这就是跳转后的地址，再向这个地址发出新申请，以便得到跳转后的信息是啥。
+            httpPost = new HttpPost(newuri);
+            response1 = (CloseableHttpResponse) httpclient.execute(httpPost);
+            code = response1.getStatusLine().getStatusCode();
+        }
+        //------------重定向结束
+		
 		try {
 			HttpEntity entity1 = response1.getEntity();
 			String body = EntityUtils.toString(entity1);

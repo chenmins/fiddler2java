@@ -29,7 +29,7 @@ public class TestZip {
 	 */
 
 	public static void main(String[] args) throws Exception {
-		String sazFile = "fanyi.saz";
+		String sazFile = "bhi2.saz";
 		//ctp_sin_bkk
 //		String sazFile = "e:\\ctp_sin_bkk.saz";
 		String genRoot = "../fiddlerTest/src";
